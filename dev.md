@@ -1,7 +1,9 @@
 # Dev
 
-```
-apt install python3 python3-pip
+```bash
+# debian: apt install python3 python3-pip
+# centos: yum install python3 python3-pip
+
 # dev
 pip install -e .
 # lint

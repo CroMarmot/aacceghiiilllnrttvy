@@ -7,13 +7,15 @@ name = "v2raya-cli-client"
 dynamic = ["version"]
 description = ''
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.6"
 license = "MIT"
 keywords = []
 authors = [{ name = "cromarmot", email = "yexiaorain@gmail.com" }]
 classifiers = [
   "Development Status :: 4 - Beta",
   "Programming Language :: Python",
+  "Programming Language :: Python :: 3.6",
+  "Programming Language :: Python :: 3.7",
   "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
@@ -21,7 +23,7 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
 ]
-dependencies = ["click==8.1.7", "requests==2.31.0", "rich==13.7.0"]
+dependencies = ["click==8.0.4", "requests==2.25.1", "rich==12.6.0"]
 
 [project.urls]
 Documentation = "https://github.com/CroMarmot/aacceghiiilllnrttvy#readme"
@@ -43,7 +45,7 @@ cov-report = ["- coverage combine", "coverage report"]
 cov = ["test-cov", "cov-report"]
 
 [[tool.hatch.envs.all.matrix]]
-python = ["3.8", "3.9", "3.10", "3.11"]
+python = ["3.6", "3.7", "3.8", "3.9", "3.10", "3.11"]
 
 [tool.hatch.envs.lint]
 detached = true

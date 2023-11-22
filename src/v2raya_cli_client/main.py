@@ -296,11 +296,12 @@ def cli_account(username: str):
 @click.option("--sub-idx", default=0, help="subscription index")
 @click.option("--sub-update-hour", default=1)
 @click.option("--fast-server", default=3, help="the fast X server")
-def smart(outbound: str, sub_idx: int, sub_update_hour: int, fast_server: int):
+@click.option("--tz-delta", default=0, help="UTC offset hours")
+def smart(outbound: str, sub_idx: int, sub_update_hour: int, fast_server: int, tz_delta:int):
     """one key select best server (login before using this)"""
     # 更新 订阅
     touch_res: TOUCH_RESULT = norm_resp(touch())
-    console.print(f"[green]Touch success ({datetime.now(tz=timezone.utc).strftime(time_format)})[/green]")
+    console.print(f"[green]Touch success ({datetime.now(tz=timezone(timedelta(hours=tz_delta))).strftime(time_format)})[/green]")
 
     # for sb in touch_res["touch"]["subscriptions"]:
     # TODO 目前只处理单个订阅
@@ -335,7 +336,7 @@ def smart(outbound: str, sub_idx: int, sub_update_hour: int, fast_server: int):
     console.print(f"[green]Connect fast {fast_server} server success[/green]")
     # 如果未启动,则启动
     start_server(touch_res)
-    console.print(f"[green]Server started ({datetime.now(tz=timezone.utc).strftime(time_format)})[/green]")
+    console.print(f"[green]Server started ({datetime.now(tz=timezone(timedelta(hours=tz_delta))).strftime(time_format)})[/green]")
 
 
 # TODO outbound 增删, subscription 查/删

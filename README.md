@@ -16,6 +16,7 @@
 ## Installation
 
 ```bash
+pip install hatch
 pip install -e .
 ```
 
