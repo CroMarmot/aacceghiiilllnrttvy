@@ -84,10 +84,7 @@ def cli():
 @click.argument("username")
 def login(username):
     """auth with username and password"""
-    try:
-        pwd = getpass.getpass(prompt="Enter your password: ")
-    except Exception as e:
-        console.print("Error:", e)
+    pwd = getpass.getpass(prompt="Enter your password: ")
 
     res = norm_resp(
         requests.post(api_url("login"), json={"username": username, "password": pwd}, timeout=REQUESTS_TIMEOUT)
@@ -124,7 +121,7 @@ def cli_touch(fast_server: int):
 
     linked_server_dict = {}
 
-    servers = res["touch"]["connectedServer"]
+    servers = res["touch"]["connectedServer"] or []
     for server in servers:
         s_id = server["id"]
         s_sub = server["sub"]
@@ -220,7 +217,7 @@ def update_subscription(subscription_id: int) -> TOUCH_RESULT:
 
 
 def clear_connection(touch_res: TOUCH_RESULT, outbound_id: str) -> TOUCH_RESULT:
-    servers = touch_res["touch"]["connectedServer"]
+    servers = touch_res["touch"]["connectedServer"] or []
 
     for server in servers:
         if server["outbound"] == outbound_id:
@@ -272,6 +269,26 @@ def cli_import(url):
         requests.post(api_url("import"), headers=get_headers(), json={"url": url}, timeout=REQUESTS_TIMEOUT)
     )
     console.print(res)
+
+
+@cli.command("account")
+@click.argument("username")
+def cli_account(username: str):
+    """init create account with username and password"""
+    pwd = getpass.getpass(prompt="Enter your password: ")
+    res = norm_resp(
+        requests.post(
+            api_url("account"),
+            headers=get_headers(),
+            json={"username": username, "password": pwd},
+            timeout=REQUESTS_TIMEOUT,
+        )
+    )
+
+    console.print(f"Account Create Success. token saved into ({CFG_JSON_PATH})")
+    cfg = ls_read()
+    cfg["token"] = res["token"]
+    ls_write(cfg)
 
 
 @cli.command()

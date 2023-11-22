@@ -10,18 +10,22 @@
 - [v2rayA-cli-client-light](#v2raya-cli-client-light)
   - [Installation](#installation)
   - [Usage](#usage)
+    - [定时](#定时)
   - [License](#license)
 
 ## Installation
 
-```console
+```bash
 pip install -e .
 ```
 
 ## Usage
 
-```console
+```bash
 v2ctl --help
+# init with username and password
+v2ctl account <username>
+# login with username and password
 v2ctl login <username>
 v2ctl touch
 v2ctl smart
@@ -29,7 +33,7 @@ v2ctl smart
 
 ### 定时
 
-```
+```bash
 crontab -u $USER -e
 # Example
 0 */2 * * * export PATH=$PATH:/home/cromarmot/.local/bin; v2ctl smart --fast-server 1 >> /tmp/v2ctl.log
