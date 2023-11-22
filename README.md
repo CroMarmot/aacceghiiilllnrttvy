@@ -27,6 +27,14 @@ v2ctl touch
 v2ctl smart
 ```
 
+### 定时
+
+```
+crontab -u $USER -e
+# Example
+0 */2 * * * export PATH=$PATH:/home/cromarmot/.local/bin; v2ctl smart --fast-server 1 >> /tmp/v2ctl.log
+```
+
 ## License
 
 `v2raya-cli-client` is distributed under the terms of the [MIT](https://spdx.org/licenses/MIT.html) license.

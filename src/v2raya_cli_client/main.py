@@ -283,7 +283,7 @@ def smart(outbound: str, sub_idx: int, sub_update_hour: int, fast_server: int):
     """one key select best server (login before using this)"""
     # 更新 订阅
     touch_res: TOUCH_RESULT = norm_resp(touch())
-    console.print("[green]Touch success[/green]")
+    console.print(f"[green]Touch success ({datetime.now(tz=timezone.utc).strftime(time_format)})[/green]")
 
     # for sb in touch_res["touch"]["subscriptions"]:
     # TODO 目前只处理单个订阅
@@ -318,7 +318,7 @@ def smart(outbound: str, sub_idx: int, sub_update_hour: int, fast_server: int):
     console.print(f"[green]Connect fast {fast_server} server success[/green]")
     # 如果未启动,则启动
     start_server(touch_res)
-    console.print("[green]Server started[/green]")
+    console.print(f"[green]Server started ({datetime.now(tz=timezone.utc).strftime(time_format)})[/green]")
 
 
 # TODO outbound 增删, subscription 查/删
