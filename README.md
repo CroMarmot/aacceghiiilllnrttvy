@@ -16,6 +16,7 @@
 ## Installation
 
 ```bash
+apt/yum install python3 python3-pip
 pip install hatch
 pip install -e .
 ```
@@ -28,8 +29,11 @@ v2ctl --help
 v2ctl account <username>
 # login with username and password
 v2ctl login <username>
+v2ctl import <subscription url>
 v2ctl touch
 v2ctl smart
+# or more custom options
+v2ctl smart --fast-server 2 --tz-delta=8 --sub-idx 1 --test-url https://openai.com
 ```
 
 ### 定时

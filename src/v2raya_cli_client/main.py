@@ -5,7 +5,7 @@ from datetime import datetime, timedelta, timezone
 
 # from dataclasses import dataclass
 from functools import cmp_to_key
-from typing import Any, List
+from typing import Any, Dict, List
 
 import click
 import requests
@@ -119,7 +119,7 @@ def cli_touch(fast_server: int):
     """get the list of subscription"""
     res = norm_resp(touch())
 
-    linked_server_dict = {}
+    linked_server_dict: Dict[int, Dict[str, bool]] = {}
 
     servers = res["touch"]["connectedServer"] or []
     for server in servers:
@@ -181,7 +181,7 @@ def outbounds():
     console.print(json.dumps(res, indent=2, ensure_ascii=False))
 
 
-def update_latency(touch_res: TOUCH_RESULT, idx: int) -> TOUCH_RESULT:
+def do_httplatency(touch_res: TOUCH_RESULT, idx: int, test_url: str = "") -> TOUCH_RESULT:
     whiches = []
     for server in touch_res["touch"]["subscriptions"][idx]["servers"]:
         # console.print(f"Test Latency: {server['name']}")
@@ -193,6 +193,8 @@ def update_latency(touch_res: TOUCH_RESULT, idx: int) -> TOUCH_RESULT:
             }
         )
     url = f"{API_SUFFIX}/httpLatency?whiches=" + json.dumps(whiches)
+    if test_url:
+        url += f"&testUrl={test_url}"
     res = norm_resp(requests.get(url, headers=get_headers(), timeout=REQUESTS_TIMEOUT))
 
     d = {}
@@ -205,6 +207,15 @@ def update_latency(touch_res: TOUCH_RESULT, idx: int) -> TOUCH_RESULT:
         if s_id in d:
             server["pingLatency"] = d[s_id]
     return touch_res
+
+
+@cli.command()
+@click.option("--sub-idx", default=0, help="subscription index")
+@click.option("--test-url", default="", help="dest server for latency test")
+def httplatency(sub_idx: int, test_url: str) -> TOUCH_RESULT:
+    """test server latency with http request"""
+    touch_res = norm_resp(touch())
+    return do_httplatency(touch_res, sub_idx, test_url)
 
 
 def update_subscription(subscription_id: int) -> TOUCH_RESULT:
@@ -297,11 +308,14 @@ def cli_account(username: str):
 @click.option("--sub-update-hour", default=1)
 @click.option("--fast-server", default=3, help="the fast X server")
 @click.option("--tz-delta", default=0, help="UTC offset hours")
-def smart(outbound: str, sub_idx: int, sub_update_hour: int, fast_server: int, tz_delta:int):
+@click.option("--test-url", default="", help="dest server for latency test")
+def smart(outbound: str, sub_idx: int, sub_update_hour: int, fast_server: int, tz_delta: int, test_url: str):
     """one key select best server (login before using this)"""
     # 更新 订阅
     touch_res: TOUCH_RESULT = norm_resp(touch())
-    console.print(f"[green]Touch success ({datetime.now(tz=timezone(timedelta(hours=tz_delta))).strftime(time_format)})[/green]")
+    console.print(
+        f"[green]Touch success ({datetime.now(tz=timezone(timedelta(hours=tz_delta))).strftime(time_format)})[/green]"
+    )
 
     # for sb in touch_res["touch"]["subscriptions"]:
     # TODO 目前只处理单个订阅
@@ -318,7 +332,7 @@ def smart(outbound: str, sub_idx: int, sub_update_hour: int, fast_server: int, t
     else:
         console.print(f"[green]Subscription Cached {timedelta_2_hms(time_diff)}[/green]")
 
-    touch_res = update_latency(touch_res, sub_idx)  # [0] index
+    touch_res = do_httplatency(touch_res, sub_idx, test_url)  # [0] index
     console.print(
         f"[green]Latency update success (count: {len(touch_res['touch']['subscriptions'][sub_idx]['servers'])})[/green]"
     )
@@ -336,7 +350,9 @@ def smart(outbound: str, sub_idx: int, sub_update_hour: int, fast_server: int, t
     console.print(f"[green]Connect fast {fast_server} server success[/green]")
     # 如果未启动,则启动
     start_server(touch_res)
-    console.print(f"[green]Server started ({datetime.now(tz=timezone(timedelta(hours=tz_delta))).strftime(time_format)})[/green]")
+    console.print(
+        f"[green]Server started ({datetime.now(tz=timezone(timedelta(hours=tz_delta))).strftime(time_format)})[/green]"
+    )
 
 
 # TODO outbound 增删, subscription 查/删
