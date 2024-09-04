@@ -5,6 +5,7 @@
 # centos: yum install python3 python3-pip
 
 # dev
+hatch shell
 pip install -e .
 # lint
 hatch run lint:fmt

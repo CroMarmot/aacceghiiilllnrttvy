@@ -1,17 +1,26 @@
 import getpass
 import json
 import os
+import sys
 from datetime import datetime, timedelta, timezone
 
 # from dataclasses import dataclass
 from functools import cmp_to_key
 from typing import Any, Dict, List
 
+# TODO 换成 基于click而type支持更好的typer
 import click
 import requests
+from PySide6.QtWidgets import (
+    QApplication,
+    QMessageBox,
+    QSystemTrayIcon,
+)
 from rich.console import Console
 from rich.style import Style
 from rich.table import Table
+
+from v2raya_cli_client.systray import Window
 
 # Create a rich console object
 console = Console()
@@ -249,6 +258,8 @@ def clear_connection(touch_res: TOUCH_RESULT, outbound_id: str) -> TOUCH_RESULT:
 
 
 def do_connection(servers: List[Any], outbound_id: str, idx: int) -> TOUCH_RESULT:
+    if len(servers) == 0:
+        raise ValueError()
     for server in servers:
         touch_res = norm_resp(
             requests.post(
@@ -300,6 +311,26 @@ def cli_account(username: str):
     cfg = ls_read()
     cfg["token"] = res["token"]
     ls_write(cfg)
+
+@cli.command()
+def gui():
+    """
+    only quick switch test-url now,(hard code)
+    """
+
+    app = QApplication()
+
+    if not QSystemTrayIcon.isSystemTrayAvailable():
+        QMessageBox.critical(
+            None, "Systray", "I couldn't detect any system tray on this system."
+        )
+        sys.exit(1)
+
+    QApplication.setQuitOnLastWindowClosed(False)
+
+    window = Window()
+    window.show()
+    sys.exit(app.exec())
 
 
 @cli.command()

@@ -10,12 +10,13 @@
 - [v2rayA-cli-client-light](#v2raya-cli-client-light)
   - [Installation](#installation)
   - [Usage](#usage)
+    - [gui](#gui)
     - [定时](#定时)
   - [License](#license)
 
 ## Installation
 
-```bash
+```sh
 apt/yum install python3 python3-pip
 pip install hatch
 pip install -e .
@@ -23,7 +24,7 @@ pip install -e .
 
 ## Usage
 
-```bash
+```sh
 v2ctl --help
 # init with username and password
 v2ctl account <username>
@@ -36,9 +37,17 @@ v2ctl smart
 v2ctl smart --fast-server 2 --tz-delta=8 --sub-idx 1 --test-url https://openai.com
 ```
 
+### gui
+
+only switch `test-url` now, most hard code
+
+```sh
+v2ctl gui
+```
+
 ### 定时
 
-```bash
+```sh
 crontab -u $USER -e
 # Example
 0 */2 * * * export PATH=$PATH:/home/cromarmot/.local/bin; v2ctl smart --fast-server 1 >> /tmp/v2ctl.log

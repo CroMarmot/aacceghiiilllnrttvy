@@ -23,7 +23,12 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
 ]
-dependencies = ["click==8.0.4", "requests==2.25.1", "rich==12.6.0"]
+dependencies = [
+  "click>=8.0.4",
+  "requests>=2.25.1",
+  "rich>=12.6.0",
+  "pyside6>=6.7.2",
+]
 
 [project.urls]
 Documentation = "https://github.com/CroMarmot/aacceghiiilllnrttvy#readme"
@@ -34,7 +39,7 @@ Source = "https://github.com/CroMarmot/aacceghiiilllnrttvy"
 v2ctl = "v2raya_cli_client.main:cli"
 
 [tool.hatch.version]
-path = "src/v2raya_cli_client/__about__.py"
+path = "src/v2raya_cli_client/__version__.py"
 
 [tool.hatch.envs.default]
 dependencies = ["coverage[toml]>=6.5", "pytest"]
@@ -126,7 +131,7 @@ ban-relative-imports = "all"
 source_pkgs = ["v2raya_cli_client", "tests"]
 branch = true
 parallel = true
-omit = ["src/v2raya_cli_client/__about__.py"]
+omit = ["src/v2raya_cli_client/__version__.py"]
 
 [tool.coverage.paths]
 v2raya_cli_client = [
