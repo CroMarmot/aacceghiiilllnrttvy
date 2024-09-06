@@ -28,6 +28,7 @@ class Window(QDialog):  # 也可以不要Dialog 做纯的tray 应用
             "https://www.youtube.com",
             "https://www.javbus.com",
             "https://javdb.com",
+            "https://fc2ppvdb.com",
             "https://x.com",
             "https://missav.com",
             "https://njav.tv",
@@ -83,11 +84,13 @@ class Window(QDialog):  # 也可以不要Dialog 做纯的tray 应用
 
     @Slot()
     def show_message(self, msg: str):  # 显示系统消息
+        # PySide6.QtWidgets.QSystemTrayIcon.showMessage():
+        #   not enough arguments. Note: keyword arguments are only supported for optional parameters
         self._tray_icon.showMessage(
-            title=self.title,
-            msg=msg,
-            icon=QSystemTrayIcon.MessageIcon.NoIcon,
-            msecs=10 * 1000,  # 10s
+            self.title,
+            msg,
+            QSystemTrayIcon.MessageIcon.NoIcon,
+            10 * 1000,  # 10s
         )
 
     def create_icon_group_box(self):
@@ -116,7 +119,7 @@ class Window(QDialog):  # 也可以不要Dialog 做纯的tray 应用
 
     def on_url_click(self, url):
         self.logger.info(url)
-        subprocess.run(
+        res = subprocess.run(
             [
                 "v2ctl",  # Starting a process with a partial executable path Ruff(S607)
                 "smart",
@@ -129,8 +132,11 @@ class Window(QDialog):  # 也可以不要Dialog 做纯的tray 应用
                 url,
             ],
             check=True,
+            capture_output=True,
+            text=True,
         )
         self.logger.info(url + " Done")
+        self.show_message(f"{res.stdout=},{res.stderr=}")
 
     def create_tray_icon(self):
         # create_actions
