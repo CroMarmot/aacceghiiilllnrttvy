@@ -26,6 +26,8 @@ class Window(QDialog):  # 也可以不要Dialog 做纯的tray 应用
         # TODO host
         self.urls = [
             "https://www.youtube.com",
+            "https://stripchat.com",
+            "https://github.com",
             "https://www.javbus.com",
             "https://javdb.com",
             "https://fc2ppvdb.com",
